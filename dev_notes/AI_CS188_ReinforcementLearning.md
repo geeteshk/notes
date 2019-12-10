@@ -1187,12 +1187,12 @@ For example you might do some Q-learning for a while or if you've got like a hel
 
 -----
 
-## Q-Learning 的问题
+## Q-Learning (The Problem)
 
- - 如果state 很多，我们维护这么大的一个 q-value table
-    - Feature-Based Representations 是一个解决方法
-    - 但是如果输入是一张 raw pic , 不容易从 picture 中提取 feature
- - Neural Network可以很好对图片提取特征信息，进行抽象，分类等
+ - If there are many states, we maintain such a large q-value table
+    - Feature-Based Representations is a workaround
+    - But if the input is a raw pic, it is not easy to extract the feature from the picture
+ - Neural Network can extract feature information, abstract, classify, etc.
 
 <h2 id="61f0ce8542a3f21f795b45c4c133c04c"></h2>
 
@@ -1202,8 +1202,8 @@ For example you might do some Q-learning for a while or if you've got like a hel
 
 ![](../imgs/rl_deep_ql.png)
 
- - Deep Q Learning 依然是Q Learning , 只是用神经网络去代替了Q Table
- - 还有一种更加 End to End的方法，叫做Policy Gradient
+ - Deep Q Learning is still Q Learning, but it uses a neural network instead of Q Table
+ - There is also a more End to End method called Policy Gradient
 
 <h2 id="d4680878cbefd1ce084325dd933e82f9"></h2>
 
@@ -1211,61 +1211,61 @@ For example you might do some Q-learning for a while or if you've got like a hel
 
 ## Policy Gradient
 
- - Deep Q Learning 用Ｑ网络去估计Q 表然后在规定一种策略去依据Ｑ值采取行动不同
- - Policy Gradient 的策略网络直接输出的就是策略，比如采取每一种行动的概率（对于离散控制问题），或者每一个动作的值（对于连续控制问题）。
+ - Deep Q Learning uses the Ｑ network to estimate the Q table and then specifies a strategy to take actions based on the Ｑ value.
+ - Policy Gradient's policy network directly outputs policies, such as the probability of taking each action (for discrete control problems), or the value of each action (for continuous control problems).
 
 ![](../imgs/rl_pg_network.png)
 
- - 优点
-    - 更加的 End to End，不用借用强化学习的理论框架。
-    - 可以通过直接输出动作相应的连续量处理连续的控制量
-        - 比如对于汽车来说，油门的力度，刹车力度，转向角度
-        - 用通过Ｑ值选动作的方法则无法处理连续量
- - 在　Policy Gradient　中我们希望学会一个策略能够达到最大的期望回馈
-    - π<sub>θ</sub>(s) 表示策略 
-    - θ 表示 策略网络的 weight 
-    - 通过学习不断更新。目标函数可以表示为 J(θ) = E<sub>π(θ)</sub>[r] 
+ - Advantage
+    - More End to End without borrowing the theoretical framework of reinforcement learning.
+    - Can process continuous control quantities by directly outputting corresponding continuous quantities of actions
+        - For cars, for example, the throttle, brake, and steering angle.
+        - The method of selecting action by threshold cannot handle continuous quantities
+ -In  Policy Gradient we hope to learn a strategy to achieve the maximum expected feedback
+    - π <sub>θ</sub> (s) means strategy
+    - θ represents the weight of the strategy network
+    - Constantly updated through learning. The objective function can be expressed as J(θ) = E<sub>π(θ)</sub>[r]
     - ![](../imgs/rl_pg_derivative_J_theta.png)
-        - 由此导数，我们可以把每轮的折扣回馈 v<sub>t</sub> 看作改 state 真实价值 G<sub>t</sub> 的无偏估计
-        - 利用Gradient ascent的方法 ， 不停地更新 θ 训练一个能够达到最大期望回馈的策略网络。
+        - From this derivative, we can treat the discount rebate v <sub>t</sub> as an unbiased estimate of the true value of the state G <sub>t</sub>
+        - Using Gradient ascent method, keep updating θ to train a strategic network that can achieve the maximum expected feedback.
         - ![](../imgs/rl_pg_update_theta.png)
-
- - PG 听起来很美好 , 实践中会有很多致命的问题让它很难收敛
-    - 1. 反馈分配: 反馈在大多时候都是不存在的
-        - 比如赛车游戏，只有游戏结束，例如到达终点或者撞墙而亡的时候才收到反馈
-        - 如何将反馈很好的和之前进行的一系列策略和动作联系到一起去是一个很大的问题
-    - 2. 算法有一个内在的假设，假设所有的抽样都是独立，并且处于相同分布的(independently and identically distributed, iid )
-        - 但是实际上，在游戏进行的过程中，同一时间段前后的抽样是明显具有相关性的，这个iid假设并不成立，也就会影响到学习的效果
-    - 3. 反馈噪音 
-        - 在我们通过获取反馈，折扣，然后ＴＤ来更新Ｑ值的方法，或者直接估计策略的方法中，这些反馈信号都有非常多的噪声，这些噪声可能会让整个网络很难收敛，甚至很容易发散。
- - 直到发现这个更加高级的方法DDPG
+ 
+ - PG sounds good, there are many fatal problems in practice that make it difficult to converge
+    - 1. Feedback distribution: Feedback does not exist most of the time
+        - For example, racing games, only receive feedback when the game is over, such as reaching the end or crashing into a wall
+        - How to connect feedback well with a series of strategies and actions previously performed is a big problem
+    - 2. The algorithm has an inherent assumption, assuming that all the samples are independent and are in the same distribution (independently and identically distributed, iid)
+        - In fact, in the process of the game, the sampling before and after the same time period is obviously relevant. This iid assumption does not hold, and it will affect the learning effect.
+    - 3. Feedback noise
+        - In our method of obtaining feedback, discount, and then TD to update the value of Q, or a method of directly estimating the strategy, these feedback signals have a lot of noise, which may make the entire network difficult to converge, or even easy Divergence.
+ - Until I found this more advanced method DDPG
 
 <h2 id="60ca1673615c7ff54bc9af8925335b66"></h2>
 
 -----
 
 ## Deep Deterministic Policy Gradient
-
- - 动作网络 Actor Network 用于直接估计动作
-    - 就像低配版 Policy Gradient中的 Policy Network，输入State，给出动作值 Actions
-    - 从Critic Network 对应 Actions 输入计算出的导数来进行更新。
- - 校正网络 Critic Network 用来估计Q值
-    - 输入 State 的同时还输入由Actor Network 产生的 Actions，给出相应的 Q 值
-    - 并不断的用 bellman equation来进行更新 
- - 动作方程 actor function 表示为: μ(s|θ<sup>μ</sup>)
- - 校正方程 critic function 表示为: Q(s,a | θ<sup>Q</sup> ) 
- - Cost function J 对于\theta的导数为：
+        
+ - Actor Network for direct estimation of actions
+    - Just like the Policy Network in the lower version of Policy Gradient, enter State and give action values Actions
+    - Input the calculated derivative from Critic Network corresponding Actions to update.
+ - Critic Network used to estimate Q value
+    - Enter State as well as Actions generated by Actor Network, giving the corresponding Q value
+    - Constantly update with bellman equation
+ - Actor function is expressed as: μ(s|θ<sup>μ</sup>)
+ - Correction equation critic function is expressed as: Q(s,a | θ<sup>Q</sup>)
+ - The derivative of Cost function J for \ theta is:
     - ![](../imgs/rl_DDPG_derivative_J_theta.png)
- - 这个算法将对动作的Q值估计和策略估计给分离，让 agent 能够在探索更多的同时保持对一个确定策略的学习，让整个网络学习变得更容易。
- - 其他 更有利于网络的收敛 的小技巧 （小，但是很有用）
+ - This algorithm separates the Q value estimation of the action from the strategy estimation, so that the agent can keep learning about a certain strategy while exploring more, making the entire network learning easier.
+ - Other tips for network convergence (small, but useful)
     - Replay Buffer
-        - 近乎于无限大的缓存，每次进行动作以后得到的 状态-动作-反馈- 新状态 (s<sub>t</sub>,a<sub>t</sub>, r<sub>t</sub>,s<sub>t+1</sub> ) 都会被保存到这个缓存中去
-        - 不同于之前直接拿游戏进行过程中得到的 (s<sub>t</sub>,a<sub>t</sub>, r<sub>t</sub>,s<sub>t+1</sub> )  来进行训练
-        - 采用了Replay Buffer 以后，训练采用的 sample 则从这个缓存中随机抽样，通过这样的方法，理论上可以打破抽样直接的相关性，解决iid假设不成立的困扰
+        - Nearly infinite cache, state-action-feedback obtained after each action-new state (s<sub>t</sub>,a<sub>t</sub>,r<sub>t</sub>,s<sub>t + 1</sub> ) will be saved to this cache
+        - Different from (s<sub>t</sub>, a<sub>t</sub>,r<sub>t</sub>,s<sub>t + 1)</sub> ) for training
+        - After using the Replay Buffer, the sample used in training is randomly sampled from this buffer. In this way, the direct correlation between the samples can be theoretically broken, and the problem of the iid assumption not being established can be solved.
     - Target Network
-        - 在训练过程中，由于环境是相对混沌的，用于更新Q网络的反馈具有很大的噪声
-        - 直接训练一个网络会非常容易让它发散而非收敛。
-        - 目标网络Target Network 用来创建 Actor和Critic网络的副本, μ'(s|θ<sup>μ</sup>)  ,  Q'(s,a | θ<sup>Q</sup> ) 来计算目标值，然后以τ 的比例缓慢的跟随原网络更新
+        - During the training process, because the environment is relatively chaotic, the feedback used to update the Q network has a lot of noise
+        - Training a network directly will make it very easy to diverge rather than converge.
+        - Target Network Target Network is used to create copies of Actor and Critic networks, μ'(s|θ<sup>μ</sup>), Q' (s,a | θ<sup>Q</sup>) to calculate Target value, and then slowly follow the original network update in proportion to τ
             - τθ' ← τθ + (1-τ)θ'
 
 
@@ -1284,26 +1284,26 @@ For example you might do some Q-learning for a while or if you've got like a hel
 
 -----
 
-## 和以往的强化学习方法不同
+## Different from previous reinforcement learning methods
 
- - 强化学习是一个通过奖惩来学习正确行为的机制.
-    - 有学习奖惩值, 根据自己认为的高价值选行为 , 比如 Q learning, Deep Q Network,
-        - 无法在 无穷多的动作中计算价值, 从而选择行为
-    - 也有不通过分析奖励值, 直接输出行为的方法,   Policy Gradients 
-        - 能在一个连续区间内挑选动作
+ - Reinforcement learning is a mechanism to learn correct behavior through rewards and punishments.
+    - There are learning rewards and punishment values, and behaviors based on what they think are high value, such as Q learning, Deep Q Network,
+        - Unable to calculate value in an infinite number of actions to choose behavior
+    - There are also methods to directly output behavior without analyzing the reward value, Policy Gradients
+        - Ability to select actions in a continuous interval
 
 <h2 id="1a843b1039c85dd724a126708a375915"></h2>
 
 -----
 
-## 更新不同之处
+## Update differences
     
- - Policy Gradients 的误差又是什么呢?
-    - 没有误差! 
- - 但是他的确是在进行某一种的反向传递. 
-    - 这种反向传递的目的是让这次被选中的行为更有可能在下次发生.
- - 但是我们要怎么确定这个行为是不是应当被增加被选的概率呢?
-    - reward
+- What is the error of Policy Gradients?
+     - No errors!
+- But he did some sort of reverse pass.
+     - The purpose of this reverse pass is to make this selected behavior more likely to happen next time.
+- But how do we determine if this behavior should increase the probability of being selected?
+     - reward
 
 ![](../imgs/rl_pg_error.png)
 
@@ -1311,21 +1311,18 @@ For example you might do some Q-learning for a while or if you've got like a hel
 
 -----
 
-## 具体更新步骤
+## Specific update steps
 
 ![](../imgs/rl_pg_update_step.png)
 
- - 观测的信息通过神经网络分析, 选出了左边的行为
- - 我们直接进行反向传递, 使之下次被选的可能性增加.
- - 但是奖惩信息却告诉我们, 这次的行为是不好的, 那我们的动作可能性增加的幅度 随之被减低.
- - 这样就能靠奖励来左右我们的神经网络反向传递
- - 再来举个例子, 假如这次的观测信息让神经网络选择了右边的行为, 
- - 右边的行为随之想要进行反向传递, 使右边的行为下次被多选一点,
- - 这时, 奖惩信息也来了, 告诉我们这是好行为, 那我们就在这次反向传递的时候加大力度, 让它下次被多选的幅度更猛烈! 这
- - 这就是 Policy Gradients 的核心思想
-
-
-
+- Observed information is analyzed by neural network, the behavior on the left is selected
+- We carry out the reverse pass directly, making it more likely to be selected next time.
+- But the reward and punishment information tells us that this time the behavior is bad, then the increase in the probability of our movement is reduced.
+- This can rely on rewards to control our neural network's reverse transmission
+- Let's take another example. If the observation information makes the neural network choose the right behavior,
+- The behavior on the right then wants to pass back, so that the behavior on the right is selected a little more next time,
+- At this time, the reward and punishment information also came, telling us that this is a good behavior, then we will increase our strength during this reverse transfer, so that it will be more vigorously selected next time! This
+- This is the core idea of Policy Gradients
 
 ---
 
@@ -1339,14 +1336,13 @@ For example you might do some Q-learning for a while or if you've got like a hel
  · |  Q Learning  |  Policy Gradient
 --- | --- | --- 
 model-free  | off-policy model-free control | policy optimization
-目的 | 求出Q\*(s, a) | 优化expected reward，并不关心Q\*(s, a).
-适用场合 | 一般针对离散空间 | 针对连续场景
-学习方法 | 基于值函数估计的强化学习方法 | 策略搜索强化学习方法
-学习方法类比 | 可类比Naive Bayes——通过估计后验概率来得到预测 | 可类比SVM——不估计后验概率而直接优化学习目标
-求解方法 | 采用值迭代方法。以value推policy | 直接在策略空间求解，泛化更好，直推policy
-最优解 | 在离散状态空间中理论上可以收敛到最优策略，但收敛速度可能极慢。在使用函数逼近后（例如使用神经网络策略模型）则不一定 | Policy Gradient由于使用梯度方法求解非凸目标，只能收敛到不动点，不能证明收敛到最优策略。
-存在问题 | 基于值函数的方法存在策略退化问题，即值函数估计已经很准确了，但通过值函数得到的策略仍然不是最优。使用值函数近似时，策略退化现象非常常见 |  Policy Gradient不会出现策略退化现象，其目标表达更直接，求解方法更现代，还能够直接求解stochastic policy等等优点更加实用。
-
+Purpose | Find Q \* (s, a) | Optimize expected reward, don't care about Q \* (s, a).
+Applicable occasions | Generally for discrete space | For continuous scenes
+Learning Methods | Reinforcement Learning Methods Based on Value Function Estimation | Strategy Search Reinforcement Learning Methods
+Learning Methodology Analogy | Naive Bayes Analogy-Prediction by Estimating Posterior Probability | Analogy SVM-Optimizing Learning Objectives Without Estimating Posterior Probability
+Solving Method | Uses the value iterative method. Push policy by value | Solve directly in the policy space, generalization is better, push policy directly
+Optimal Solution | It is theoretically possible to converge to an optimal strategy in discrete state space, but the convergence rate may be extremely slow. After using function approximation (such as using a neural network strategy model), it is not necessarily | Policy Gradient can only converge to a fixed point because it uses a gradient method to solve non-convex targets, and it cannot prove to converge to an optimal strategy.
+Problems | The method based on value function has the problem of policy degradation, that is, the value function estimation is already accurate, but the strategy obtained by the value function is still not optimal. When using the value function approximation, policy degradation is very common | Policy Gradient does not appear policy degradation, its goal expression is more direct, its solution method is more modern, and its advantages such as being able to directly solve stochastic policy are more practical.
 ---
 
 
